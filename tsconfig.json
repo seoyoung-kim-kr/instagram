@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "sanity/schemaTypes/user.js", "sanity/schemaTypes/post.js"  ],
   "exclude": ["node_modules"]
 }
