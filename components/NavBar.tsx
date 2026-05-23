@@ -7,6 +7,7 @@ import HomeIcon from "./ui/icons/HomeIcon";
 import SearchIcon from "./ui/icons/SearchIcon";
 import NewIcon from "./ui/icons/NewIcon";
 import GradientBtn from "./GradientBtn";
+import Avartar from "./Avartar";
 
 const menu = [
   {
@@ -26,6 +27,9 @@ const menu = [
 export default function NavBar() {
   const currentPage = usePathname();
   const { data: session, status } = useSession();
+
+  const userImage = session?.user?.image ?? null;
+  const userName = session?.user?.username ?? null;
 
   const base =
     "flex items-center justify-center rounded-lg p-2 transition duration-150 text-gray-500";
@@ -53,7 +57,12 @@ export default function NavBar() {
           {status === "loading" ? (
             <GradientBtn text="Loading..." disabled />
           ) : session ? (
-            <GradientBtn text="Sign out" onClick={() => signOut()} />
+            <>
+              <Link href={`/user/${userName}`}>
+                <Avartar image={userImage} />
+              </Link>
+              <GradientBtn text="Sign out" onClick={() => signOut()} />
+            </>
           ) : (
             <Link href="/sign-in">
               <GradientBtn text="Sign in" />
