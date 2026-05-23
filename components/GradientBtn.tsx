@@ -5,7 +5,7 @@ import React from "react";
 type Props = {
   text: string;
   className?: string;
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   ariaLabel?: string;
   disabled?: boolean;
 };
