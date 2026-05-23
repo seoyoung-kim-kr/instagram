@@ -4,7 +4,7 @@ import "./globals.css";
 import { SanityLive } from "@/sanity/lib/live";
 import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
-import Header from "@/components/Header";
+import NavBar from "@/components/NavBar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -34,7 +34,9 @@ export default async function RootLayout({
       className={`${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body>
-        <Header />
+        <header>
+          <NavBar />
+        </header>
         <main>{children}</main>
         <SanityLive />
         {(await draftMode()).isEnabled && <VisualEditing />}
