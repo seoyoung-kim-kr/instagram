@@ -1,7 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import GradientBtn from "@/components/GradientBtn";
+import { signIn } from "next-auth/react";
 
 export default function page() {
   return (
@@ -11,9 +11,10 @@ export default function page() {
         <p className="mb-8 max-w-md text-sm text-slate-600">
           Sign in with Google to continue to your Instagram-style feed.
         </p>
+
         <GradientBtn
-          text="Sign In with Google"
-          onClick={() => signIn("google", { callbackUrl: "/" })}
+          text="Sign in With Google"
+          onClick={() => signIn("google")}
         />
       </div>
     </section>
