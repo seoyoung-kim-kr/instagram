@@ -4,7 +4,7 @@ import GradientBtn from "@/components/GradientBtn";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
-export default function page() {
+export default function SignInPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
