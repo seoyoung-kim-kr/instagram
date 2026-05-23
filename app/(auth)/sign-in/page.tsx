@@ -2,8 +2,12 @@
 
 import GradientBtn from "@/components/GradientBtn";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 
 export default function page() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   return (
     <section className="flex min-h-screen items-center justify-center bg-slate-50">
       <div className="rounded-3xl border border-slate-200 bg-white p-10 shadow-xl shadow-slate-200/50">
@@ -14,7 +18,7 @@ export default function page() {
 
         <GradientBtn
           text="Sign in With Google"
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl })}
         />
       </div>
     </section>

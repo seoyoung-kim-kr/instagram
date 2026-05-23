@@ -8,7 +8,11 @@ export default auth((req) => {
   const isSignInPage = nextUrl.pathname === "/sign-in";
 
   if (!isLoggedIn && !isSignInPage) {
-    return Response.redirect(new URL("/sign-in", nextUrl));
+    const callbackUrl = encodeURIComponent(nextUrl.pathname + nextUrl.search);
+
+    return Response.redirect(
+      new URL(`/sign-in?callbackUrl=${callbackUrl}`, nextUrl),
+    );
   }
 
   if (isLoggedIn && isSignInPage) {
