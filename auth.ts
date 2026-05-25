@@ -1,21 +1,22 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { addOAuthUser } from "./service/user";
+import { addUser } from "./service/user";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
   callbacks: {
-    async signIn({ user, account }) {
-      const googleId = account?.providerAccountId || user.id;
+    async signIn({ user: { id, name, image, email }, account }) {
+      const googleId = account?.providerAccountId || id;
 
-      if (!user.email || !googleId) return false;
+      if (!email || !googleId) return false;
 
       try {
-        await addOAuthUser({
+        await addUser({
           id: googleId,
-          name: user.name ?? "",
-          email: user.email,
-          image: user.image,
+          name: name ?? "",
+          image,
+          email,
+          username: email?.split("@")[0],
         });
         return true;
       } catch (error) {
