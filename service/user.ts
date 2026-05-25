@@ -1,22 +1,21 @@
 // service/user.ts
-import { writeClient } from "@/sanity/lib/client";
+import { client } from "@/sanity/lib/client";
 
 interface OAuthUser {
   id: string;
-  name: string;
   email: string;
+  name: string;
+  username: string;
   image?: string | null;
 }
 
-export async function addOAuthUser({ id, name, email, image }: OAuthUser) {
-  const username = email.split("@")[0];
-
-  return writeClient.createIfNotExists({
+export async function addUser({ id, username, email, name, image }: OAuthUser) {
+  return client.createIfNotExists({
     _id: id,
     _type: "user",
     username,
-    name,
     email,
+    name,
     image: image ?? "",
     following: [],
     bookmarks: [],

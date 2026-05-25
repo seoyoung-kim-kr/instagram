@@ -6,13 +6,6 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true,
-});
-
-export const writeClient = createClient({
-  projectId,
-  dataset,
-  apiVersion: "2026-05-23",
   useCdn: false,
   token: process.env.SANITY_API_WRITE_TOKEN,
 });
