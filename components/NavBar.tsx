@@ -7,7 +7,7 @@ import HomeIcon from "./ui/icons/HomeIcon";
 import SearchIcon from "./ui/icons/SearchIcon";
 import NewIcon from "./ui/icons/NewIcon";
 import GradientBtn from "./GradientBtn";
-import Avartar from "./Avartar";
+import Avatar from "./Avatar";
 
 const menu = [
   {
@@ -59,7 +59,7 @@ export default function NavBar() {
           ) : session ? (
             <>
               <Link href={`/user/${userName}`}>
-                <Avartar image={userImage} />
+                <Avatar image={userImage} />
               </Link>
               <GradientBtn text="Sign out" onClick={() => signOut()} />
             </>
