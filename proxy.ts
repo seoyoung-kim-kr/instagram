@@ -28,5 +28,5 @@ export default auth((req) => {
  * - signIn (로그인 페이지 자체는 비로그인 상태로 접근 가능해야 함!)
  */
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|studio).*)"],
 };
