@@ -11,7 +11,7 @@ export default async function Homepage() {
 
   return (
     <section className="w-full max-w-212.5 flex flex-col md:flex-row justify-between gap-x-10 px-10 py-7">
-      <div className="w-full basis-3/4">
+      <div className="w-full basis-3/4 min-w-0">
         <FollowingBar />
         <PostList />
       </div>
