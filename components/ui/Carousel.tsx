@@ -132,7 +132,7 @@ function Carousel({
   );
 }
 
-function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
+function CarouselContent({ className, ...props }: React.ComponentProps<"ul">) {
   const { carouselRef, orientation } = useCarousel();
 
   return (
@@ -141,7 +141,7 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
       className="overflow-hidden"
       data-slot="carousel-content"
     >
-      <div
+      <ul
         className={cn(
           "flex",
           orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col",
@@ -153,11 +153,11 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
+function CarouselItem({ className, ...props }: React.ComponentProps<"li">) {
   const { orientation } = useCarousel();
 
   return (
-    <div
+    <li
       role="group"
       aria-roledescription="slide"
       data-slot="carousel-item"
