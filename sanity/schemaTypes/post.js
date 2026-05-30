@@ -47,6 +47,15 @@ export default {
               name: "comment",
               type: "string",
             },
+            {
+              title: "Created At",
+              name: "createdAt",
+              type: "datetime",
+              options: {
+                dateFormat: "YYYY-MM-DD",
+                timeFormat: "HH:mm",
+              },
+            },
           ],
         },
       ],
