@@ -160,4 +160,8 @@ samp {
   html {
     @apply font-sans;
   }
+  ul {
+    list-style: none;
+    @apply p-0 m-0;
+  }
 }
