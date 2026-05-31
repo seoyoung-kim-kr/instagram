@@ -1,35 +1,31 @@
 import React from "react";
 import Avatar from "./Avatar";
 import Image from "next/image";
-import type { Post } from "@/model/post";
-import imageUrlBuilder from "@sanity/image-url";
-import { client } from "@/sanity/lib/client";
+import type { SimplePost } from "@/model/post";
 import LikeIcon from "./ui/icons/LikeIcon";
 import BookmarkIcon from "./ui/icons/BookmarkIcon";
+import parseDate from "@/util/date";
 
-const builder = imageUrlBuilder(client);
-const urlFor = (source: any) => builder.image(source);
-
-export default function Post({
+export default function PostListCard({
   userImage,
   username,
-  photo,
-  likeCount,
+  image,
+  likes,
   text,
   createdAt,
-}: Post) {
+}: SimplePost) {
   return (
     <>
       <div className="flex items-center gap-x-2">
         <Avatar image={userImage} />
         <span className="text-sm font-semibold">{username}</span>
         <span className="text-sm text-muted-foreground font-semibold">
-          • {createdAt}
+          • {parseDate(createdAt)}
         </span>
       </div>
 
       <Image
-        src={urlFor(photo).width(500).url()}
+        src={image}
         alt="post photo"
         width={468}
         height={585}
@@ -39,7 +35,7 @@ export default function Post({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-x-2">
             <LikeIcon />
-            <span className="font-bold">{likeCount}</span>
+            <span className="font-bold">{likes?.length ?? 0}</span>
           </div>
           <div>
             <BookmarkIcon />

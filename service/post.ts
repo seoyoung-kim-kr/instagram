@@ -1,36 +1,31 @@
-import { Post } from "@/model/post";
+import { SimplePost } from "@/model/post";
 import { client } from "@/sanity/lib/client";
-import { format } from "timeago.js"; // 💡 timeago 라이브러리 임포트
+import { urlFor } from "@/sanity/lib/image";
+import { format } from "timeago.js";
 
-export async function getFollowingPostsOf(username: string): Promise<Post[]> {
-  const posts = await client.fetch(
-    `*[_type == "post" && author->username in *[_type == "user" && username == $username][0].following[]->username] 
-    | order(_createdAt desc){
-      "id": _id,
-      "createdAt": _createdAt,
-      "username": author->username,
-      "userImage": author->image, 
-      "photo": photo,
-      "likes": likes[]->username,
-      "likeCount": count(likes),
-      "text": comments[0].comment,
-      "comments": comments[]{
-        "username": author->username,
-        "userImage": author->image, 
-        "text": comment,
-        "createdAt": createdAt 
-      }
-    }`,
-    { username },
-  );
+const simplePostProjection = `
+    ...,
+    "id": _id,
+    "createdAt": _createdAt,
+    "username": author->username,
+    "userImage": author->image,
+    "image":photo,
+    "likes": likes[]->username,
+    "text": comments[0].comment,
+    "comments": count(comments),
+`;
 
-  return posts.map((post: any) => ({
-    ...post,
-    createdAt: format(post.createdAt, "ko"),
-    comments:
-      post.comments?.map((comment: any) => ({
-        ...comment,
-        createdAt: comment.createdAt ? format(comment.createdAt, "ko") : "",
-      })) || [],
-  }));
+export async function getFollowingPostsOf(username: string) {
+  return await client
+    .fetch(
+      `*[_type == "post" && (author->username == $username || author._ref in *[_type == "user" && username == $username][0].following[]._ref)] 
+    | order(_createdAt desc){${simplePostProjection}}`,
+      { username },
+    )
+    .then((posts) =>
+      posts.map((post: SimplePost) => ({
+        ...post,
+        image: urlFor(post.image),
+      })),
+    );
 }

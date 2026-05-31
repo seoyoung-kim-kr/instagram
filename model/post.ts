@@ -1,16 +1,21 @@
-export type Post = {
+export type Comment = {
+  comment: string;
+  username: string;
+  image?: string;
+  createdAt: string;
+};
+
+export type SimplePost = Omit<FullPost, "comments"> & {
+  comment: number;
+};
+
+export type FullPost = {
   id: string;
   createdAt: string;
   username: string;
   userImage?: string;
-  photo: string;
-  likes: string[];
-  likeCount: number;
+  image: string;
   text: string;
-  comments: {
-    username: string;
-    userImage?: string;
-    text: string;
-    createdAt: string;
-  }[];
+  likes: string[];
+  comments: Comment[];
 };
