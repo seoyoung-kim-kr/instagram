@@ -1,19 +1,17 @@
-import React from "react";
 import Avatar from "./Avatar";
 import Image from "next/image";
 import type { SimplePost } from "@/model/post";
-import LikeIcon from "./ui/icons/LikeIcon";
-import BookmarkIcon from "./ui/icons/BookmarkIcon";
-import parseDate from "@/util/date";
 
-export default function PostListCard({
-  userImage,
-  username,
-  image,
-  likes,
-  text,
-  createdAt,
-}: SimplePost) {
+import parseDate from "@/util/date";
+import ActionBar from "./ActionBar";
+
+type Props = {
+  post: SimplePost;
+  priority?: boolean;
+};
+
+export default function PostListCard({ post, priority = false }: Props) {
+  const { userImage, username, createdAt, image, text, likes } = post;
   return (
     <>
       <div className="flex items-center gap-x-2">
@@ -30,17 +28,10 @@ export default function PostListCard({
         width={468}
         height={585}
         className="w-full object-cover aspect-square rounded-md mt-3"
+        priority={priority}
       />
       <div className="mt-2 w-full space-y-1">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-x-2">
-            <LikeIcon />
-            <span className="font-bold">{likes?.length ?? 0}</span>
-          </div>
-          <div>
-            <BookmarkIcon />
-          </div>
-        </div>
+        <ActionBar likes={likes} />
         <p>
           <span className="font-bold text-md">{username} </span>
           {text}

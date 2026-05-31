@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import { Spinner } from "./ui/Spinner";
 import type { SimplePost } from "@/model/post";
-import Post from "./PostListCard";
+import PostListCard from "./PostListCard";
 
 export default function PostList() {
   const { data: posts, isLoading, error } = useSWR<SimplePost[]>("/api/posts");
@@ -18,9 +18,9 @@ export default function PostList() {
       {error && <p>error: {error.message}</p>}
       {posts && posts.length > 0 && (
         <ul className="space-y-5">
-          {posts.map((post) => (
+          {posts.map((post, index) => (
             <li key={post.id}>
-              <Post {...post} />
+              <PostListCard post={post} priority={index < 2} />
             </li>
           ))}
         </ul>
