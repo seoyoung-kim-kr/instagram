@@ -12,7 +12,7 @@ const simplePostProjection = `
     "image":photo,
     "likes": likes[]->username,
     "text": comments[0].comment,
-    "comments": count(comments),
+    "comment": count(comments),
 `;
 
 export async function getFollowingPostsOf(username: string) {
