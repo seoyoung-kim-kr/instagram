@@ -1,4 +1,4 @@
-import { SimplePost } from "@/model/post";
+import { FullPost, SimplePost } from "@/model/post";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
 import { format } from "timeago.js";
@@ -28,4 +28,24 @@ export async function getFollowingPostsOf(username: string) {
         image: urlFor(post.image),
       })),
     );
+}
+
+export async function getPost(id: string) {
+  return client
+    .fetch(
+      `*[_type == "post" && _id == $id][0]{
+      ...,
+      "id": _id,
+      "createdAt": _createdAt,
+      "username": author->username,
+      "userImage": author->image,
+      "image": photo,
+      "likes": likes[]->username,
+      comments[]{
+        comment, "username": author->username, "image": author->image, "createdAt": createdAt
+      }
+    }`,
+      { id },
+    )
+    .then((post: FullPost) => ({ ...post, image: urlFor(post.image) }));
 }
