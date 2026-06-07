@@ -44,7 +44,7 @@ export default function PostDetailDialog({ open, onOpenChange, id }: Props) {
           className="rounded-none w-[90%] max-w-5xl h-[calc(100vh-80px)] max-h-212.5 p-0 flex bg-white overflow-hidden gap-0"
           showCloseButton={false}
         >
-          <div className="relative w-3/5 h-full bg-black flex items-center justify-center">
+          <div className="relative w-4/5 h-full bg-black flex items-center justify-center">
             <Image
               src={image}
               alt="post photo"
@@ -65,26 +65,29 @@ export default function PostDetailDialog({ open, onOpenChange, id }: Props) {
               <span className="font-semibold text-sm">{username}</span>
             </div>
 
-            {/* Comments */}
-            <ul className="flex-1 p-4 overflow-y-auto text-md">
-              {comments.map(({ username, comment, createdAt, image }, idx) => (
-                <li
-                  key={`${username}_${createdAt}_${idx}`}
-                  className="flex items-center gap-x-3.5 pb-5"
-                >
-                  <Avatar image={image} />
-                  <div>
-                    <p>
-                      <span className="font-semibold">{username}</span>{" "}
-                      {comment}
-                    </p>
-                    <p className="text-sm text-neutral-500">
-                      {parseDate(createdAt)}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            {comments && comments.length > 0 && (
+              <ul className="flex-1 p-4 overflow-y-auto text-md">
+                {comments.map(
+                  ({ username, comment, createdAt, image }, idx) => (
+                    <li
+                      key={`${username}_${createdAt}_${idx}`}
+                      className="flex items-center gap-x-3.5 pb-5"
+                    >
+                      <Avatar image={image} highlight={false} />
+                      <div>
+                        <p>
+                          <span className="font-semibold">{username}</span>{" "}
+                          {comment}
+                        </p>
+                        <p className="text-sm text-neutral-500">
+                          {parseDate(createdAt)}
+                        </p>
+                      </div>
+                    </li>
+                  ),
+                )}
+              </ul>
+            )}
 
             <div className="p-4 border-y border-neutral-200 space-y-4">
               <ActionBar
