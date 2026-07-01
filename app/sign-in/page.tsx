@@ -4,7 +4,9 @@ import GradientBtn from "@/components/GradientBtn";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
-export default function SignInPage() {
+import { Suspense } from "react";
+
+function SignInContent() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
@@ -22,5 +24,13 @@ export default function SignInPage() {
         />
       </div>
     </section>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense>
+      <SignInContent />
+    </Suspense>
   );
 }
