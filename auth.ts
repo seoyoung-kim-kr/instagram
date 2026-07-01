@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         await addUser({
           id: googleId,
           name: name ?? "",
-          image,
+          image: image ?? undefined,
           email,
           username: email?.split("@")[0],
         });
