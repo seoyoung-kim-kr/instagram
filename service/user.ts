@@ -1,6 +1,5 @@
-// service/user.ts
 import { client } from "@/sanity/lib/client";
-import { User, SearchUser } from "@/model/user";
+import { User, SearchUser, ProfileUser } from "@/model/user";
 
 export async function addUser({ id, username, email, name, image }: User) {
   return client.createIfNotExists({
@@ -40,6 +39,18 @@ export async function searchUsers(keyword?: string): Promise<SearchUser[]> {
       "followers": coalesce(count(followers), 0)
     }`,
     keyword ? { keyword: `${keyword}*` } : {}
+  );
+}
+export async function getUserProfile(username: string): Promise<ProfileUser | null> {
+  return client.fetch(
+    `*[_type == "user" && username == $username][0]{
+      ...,
+      "id": _id,
+      following[]->{username, image},
+      followers[]->{username, image},
+      "posts": count(*[_type == "post" && author->username == $username])
+    }`,
+    { username }
   );
 }
 

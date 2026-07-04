@@ -20,3 +20,7 @@ export type SearchUser = User & {
   followers: number;
 };
 
+export type ProfileUser = DetailUser & {
+  posts: number;
+};
+
