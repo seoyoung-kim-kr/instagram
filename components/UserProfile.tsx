@@ -8,6 +8,7 @@ import { SimplePost } from "@/model/post";
 import Avatar from "./Avatar";
 import PostGrid from "./PostGrid";
 import { FaTh, FaBookmark, FaHeart } from "react-icons/fa";
+import { Spinner } from "@/components/ui/Spinner";
 
 type Props = {
   initialUser: ProfileUser;
@@ -20,17 +21,73 @@ export default function UserProfile({ initialUser }: Props) {
   const myUsername = session?.user?.username;
 
   // SWR for user profile details (auto-revalidates and allows mutations)
-  const { data: profile } = useSWR<ProfileUser>(
+  const { data: profile, mutate: mutateProfile } = useSWR<ProfileUser>(
     `/api/users/${initialUser.username}`,
     { fallbackData: initialUser },
   );
 
   const [activeTab, setActiveTab] = useState<TabType>("posts");
+  const [isUpdatingFollow, setIsUpdatingFollow] = useState(false);
 
   // SWR for tab posts
   const { data: posts, isLoading: isPostsLoading } = useSWR<SimplePost[]>(
     `/api/users/${initialUser.username}/posts?type=${activeTab}`,
   );
+
+  const isSelf = profile?.username === myUsername;
+  const isFollowing =
+    profile?.followers?.some((f) => f.username === myUsername) ?? false;
+
+  const handleFollowToggle = async () => {
+    if (!profile || isUpdatingFollow) return;
+
+    setIsUpdatingFollow(true);
+
+    try {
+      // Optimistic Update for SWR Profile Cache
+      const currentFollowers = profile.followers ?? [];
+      const newFollowers = isFollowing
+        ? currentFollowers.filter((f) => f.username !== myUsername)
+        : [
+            ...currentFollowers,
+            {
+              username: myUsername || "",
+              image: session?.user?.image ?? undefined,
+            },
+          ];
+
+      mutateProfile(
+        {
+          ...profile,
+          followers: newFollowers,
+        },
+        { revalidate: false },
+      );
+
+      // API Call
+      const res = await fetch("/api/follow", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: profile.id,
+          flow: !isFollowing, // true = follow, false = unfollow
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update follow relation");
+      }
+
+      // Revalidate to sync with actual DB state
+      mutateProfile();
+    } catch (err) {
+      console.error(err);
+      // Revert in case of error
+      mutateProfile();
+    } finally {
+      setIsUpdatingFollow(false);
+    }
+  };
 
   const tabs = [
     {
@@ -65,6 +122,25 @@ export default function UserProfile({ initialUser }: Props) {
             <h1 className="text-2xl font-light text-neutral-800 truncate">
               {profile?.username}
             </h1>
+            {!isSelf && profile && (
+              <button
+                onClick={handleFollowToggle}
+                disabled={isUpdatingFollow}
+                className={`flex items-center justify-center min-w-28 text-sm font-semibold py-1.5 px-6 rounded-lg transition-all duration-200 border cursor-pointer ${
+                  isFollowing
+                    ? "bg-white hover:bg-neutral-50 text-neutral-800 border-neutral-200"
+                    : "bg-blue-500 hover:bg-blue-600 text-white border-transparent"
+                }`}
+              >
+                {isUpdatingFollow ? (
+                  <Spinner className="size-4" />
+                ) : isFollowing ? (
+                  "Unfollow"
+                ) : (
+                  "Follow"
+                )}
+              </button>
+            )}
           </div>
 
           {/* Counts */}

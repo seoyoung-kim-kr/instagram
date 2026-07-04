@@ -41,6 +41,7 @@ export async function searchUsers(keyword?: string): Promise<SearchUser[]> {
     keyword ? { keyword: `${keyword}*` } : {}
   );
 }
+
 export async function getUserProfile(username: string): Promise<ProfileUser | null> {
   return client.fetch(
     `*[_type == "user" && username == $username][0]{
@@ -53,4 +54,36 @@ export async function getUserProfile(username: string): Promise<ProfileUser | nu
     { username }
   );
 }
+
+export async function getUserIdByUsername(username: string): Promise<string | null> {
+  return client.fetch(
+    `*[_type == "user" && username == $username][0]._id`,
+    { username }
+  );
+}
+
+export async function follow(myId: string, targetId: string) {
+  return client
+    .transaction()
+    .patch(myId, (p) =>
+      p.setIfMissing({ following: [] }).append("following", [
+        { _type: "reference", _ref: targetId },
+      ])
+    )
+    .patch(targetId, (p) =>
+      p.setIfMissing({ followers: [] }).append("followers", [
+        { _type: "reference", _ref: myId },
+      ])
+    )
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function unfollow(myId: string, targetId: string) {
+  return client
+    .transaction()
+    .patch(myId, (p) => p.unset([`following[_ref=="${targetId}"]`]))
+    .patch(targetId, (p) => p.unset([`followers[_ref=="${myId}"]`]))
+    .commit();
+}
+
 
