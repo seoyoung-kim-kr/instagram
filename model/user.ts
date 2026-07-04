@@ -15,7 +15,7 @@ export type DetailUser = User & {
   bookmarks: string[];
 };
 
-export type SearchUser = User & {
+export type SearchedUser = User & {
   following: number;
   followers: number;
 };
@@ -23,4 +23,3 @@ export type SearchUser = User & {
 export type ProfileUser = DetailUser & {
   posts: number;
 };
-
