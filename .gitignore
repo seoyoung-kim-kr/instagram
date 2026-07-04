@@ -44,3 +44,5 @@ next-env.d.ts
 functions/**/.env*
 functions/**/.build/
 functions/**/node_modules/
+
+.agent
