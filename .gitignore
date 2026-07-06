@@ -46,3 +46,4 @@ functions/**/.build/
 functions/**/node_modules/
 
 .agent
+.vscode/*
