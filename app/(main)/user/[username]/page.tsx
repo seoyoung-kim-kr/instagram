@@ -4,18 +4,24 @@ import { notFound, redirect } from "next/navigation";
 import UserProfile from "@/components/UserProfile";
 import UserPosts from "@/components/UserPosts";
 import { Metadata } from "next";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ username: string }>;
 };
 
+const getUser = cache(async (username: string) => {
+  return await getUserProfile(username);
+});
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
-  const user = await getUserProfile(username);
+  const user = await getUser(username);
   return {
     title: user
-      ? `${user.name} (@${user.username}) • Instagram Photos`
+      ? `${user.name} (@${user.username}) • Instantgram Photos`
       : "User Not Found",
+    description: `${user?.name} posts on Instantgram`,
   };
 }
 
@@ -28,7 +34,7 @@ export default async function UserPage({ params }: Props) {
   }
 
   const { username } = await params;
-  const profileUser = await getUserProfile(username);
+  const profileUser = await getUser(username);
 
   if (!profileUser) {
     notFound();
