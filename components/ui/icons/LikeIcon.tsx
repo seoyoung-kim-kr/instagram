@@ -1,5 +1,14 @@
-import { FaRegHeart } from "react-icons/fa";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 
-export default function LikeIcon() {
-  return <FaRegHeart className="w-6 h-6" />;
+type Props = {
+  className?: string;
+  filled?: boolean;
+};
+
+export default function LikeIcon({ className, filled = false }: Props) {
+  return filled ? (
+    <FaHeart className={className || "w-6 h-6"} />
+  ) : (
+    <FaRegHeart className={className || "w-6 h-6"} />
+  );
 }

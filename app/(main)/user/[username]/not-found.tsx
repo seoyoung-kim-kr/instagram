@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { FaUserTimes } from "react-icons/fa";
+import UserTimesIcon from "@/components/ui/icons/UserTimesIcon";
 
 export default function NotFound() {
   return (
     <section className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center space-y-6">
       <div className="flex items-center justify-center w-20 h-20 rounded-full bg-neutral-50 border border-neutral-100 shadow-xs text-neutral-400">
-        <FaUserTimes className="size-8" />
+        <UserTimesIcon className="size-8" />
       </div>
 
       <div className="space-y-2">

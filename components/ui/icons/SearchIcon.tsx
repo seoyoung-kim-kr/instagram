@@ -1,5 +1,10 @@
 import { FaSearch } from "react-icons/fa";
 
-export default function HomeIcon() {
-  return <FaSearch className="w-7 h-7" />;
+type Props = {
+  className?: string;
+};
+
+export default function SearchIcon({ className }: Props) {
+  return <FaSearch className={className || "w-7 h-7"} />;
 }
+
