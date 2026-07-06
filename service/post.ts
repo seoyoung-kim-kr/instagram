@@ -1,7 +1,6 @@
 import { FullPost, SimplePost } from "@/model/post";
 import { client } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
-import { format } from "timeago.js";
 
 const simplePostProjection = `
     ...,
@@ -54,7 +53,7 @@ export async function getUserPosts(username: string) {
   return client
     .fetch(
       `*[_type == "post" && author->username == $username] | order(_createdAt desc){${simplePostProjection}}`,
-      { username }
+      { username },
     )
     .then(mapPosts);
 }
@@ -63,7 +62,7 @@ export async function getSavedPosts(username: string) {
   return client
     .fetch(
       `*[_type == "user" && username == $username][0].bookmarks[]-> | order(_createdAt desc){${simplePostProjection}}`,
-      { username }
+      { username },
     )
     .then(mapPosts);
 }
@@ -72,7 +71,7 @@ export async function getLikedPosts(username: string) {
   return client
     .fetch(
       `*[_type == "post" && $username in likes[]->username] | order(_createdAt desc){${simplePostProjection}}`,
-      { username }
+      { username },
     )
     .then(mapPosts);
 }

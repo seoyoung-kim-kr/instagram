@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { getUserProfile } from "@/service/user";
 import { notFound, redirect } from "next/navigation";
 import UserProfile from "@/components/UserProfile";
+import UserPosts from "@/components/UserPosts";
 import { Metadata } from "next";
 
 type Props = {
@@ -33,5 +34,10 @@ export default async function UserPage({ params }: Props) {
     notFound();
   }
 
-  return <UserProfile initialUser={profileUser} />;
+  return (
+    <section className="w-full max-w-4xl mx-auto flex flex-col p-4 md:py-12 space-y-12">
+      <UserProfile initialUser={profileUser} />
+      <UserPosts user={profileUser} />
+    </section>
+  );
 }

@@ -1,7 +1,7 @@
 import { client } from "@/sanity/lib/client";
-import { User, SearchedUser, ProfileUser } from "@/model/user";
+import { AuthUser, SearchUser, ProfileUser } from "@/model/user";
 
-export async function addUser({ id, username, email, name, image }: User) {
+export async function addUser({ id, username, email, name, image }: AuthUser) {
   return client.createIfNotExists({
     _id: id,
     _type: "user",
@@ -16,20 +16,20 @@ export async function addUser({ id, username, email, name, image }: User) {
 
 export async function getUserByUsername(username: string) {
   return client.fetch(
-    `*[_type == "user" && username == "${username}"][0]{
+    `*[_type == "user" && username == $username][0]{
     ...,
     "id": _id,
     following[]->{username, image},
     followers[]->{username, image},
     "bookmarks": bookmarks[]->_id
     }`,
-    { username: username },
+    { username },
   );
 }
 
-export async function searchUsers(keyword?: string): Promise<SearchedUser[]> {
+export async function searchUsers(keyword?: string): Promise<SearchUser[]> {
   const query = keyword
-    ? `&& (username match "${keyword}" || name match "${keyword}")`
+    ? `&& (username match $keyword || name match $keyword)`
     : "";
   return client.fetch(
     `*[_type == "user" ${query}]{
@@ -38,6 +38,7 @@ export async function searchUsers(keyword?: string): Promise<SearchedUser[]> {
       "following": coalesce(count(following), 0),
       "followers": coalesce(count(followers), 0)
     }`,
+    keyword ? { keyword: `${keyword}*` } : {},
   );
 }
 

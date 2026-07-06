@@ -14,11 +14,10 @@ export default function Avatar({
   highlight = true,
   size = "md",
 }: Props) {
-  const containerClassName = getContainerStyle(size, highlight);
-  const imageSize = getImageSizeStyle(size);
+  const { container, imageSize } = getAvatarStyles(size, highlight);
 
   return (
-    <div className={containerClassName}>
+    <div className={container}>
       <div className="bg-white rounded-full overflow-hidden w-full h-full flex items-center justify-center">
         {image ? (
           <Image
@@ -39,26 +38,26 @@ export default function Avatar({
   );
 }
 
-function getContainerStyle(size: AvatarSize, highlight: boolean): string {
+type AvatarStyle = {
+  container: string;
+  imageSize: number;
+};
+
+function getAvatarStyles(size: AvatarSize, highlight: boolean): AvatarStyle {
   const highlightClass = highlight
     ? "bg-linear-to-r from-pink-200 via-pink-300 to-purple-400 p-0.5"
     : "bg-gray-200 p-[2px]";
 
-  const containerSizes: Record<AvatarSize, string> = {
-    sm: "w-[32px] h-[32px]",
-    md: "w-[44px] h-[44px]",
-    lg: "w-[68px] h-[68px]",
+  const sizeMap: Record<AvatarSize, { container: string; imageSize: number }> = {
+    sm: { container: "w-[32px] h-[32px]", imageSize: 28 },
+    md: { container: "w-[44px] h-[44px]", imageSize: 40 },
+    lg: { container: "w-[68px] h-[68px]", imageSize: 64 },
   };
 
-  return `rounded-full inline-block ${highlightClass} ${containerSizes[size]}`;
-}
+  const currentSize = sizeMap[size];
 
-function getImageSizeStyle(size: AvatarSize): number {
-  const imageSizes: Record<AvatarSize, number> = {
-    sm: 28,
-    md: 40,
-    lg: 64,
+  return {
+    container: `rounded-full inline-block ${highlightClass} ${currentSize.container}`,
+    imageSize: currentSize.imageSize,
   };
-
-  return imageSizes[size];
 }

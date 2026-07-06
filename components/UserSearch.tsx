@@ -1,22 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import useSWR from "swr";
-import { SearchedUser } from "@/model/user";
+import useSearch from "@/hooks/useSearch";
 import useDebounce from "@/hooks/useDebounce";
 import UserCard from "@/components/UserCard";
 import { Spinner } from "@/components/ui/Spinner";
-import { FaSearch } from "react-icons/fa";
+import SearchIcon from "@/components/ui/icons/SearchIcon";
 
 export default function UserSearch() {
   const [keyword, setKeyword] = useState("");
   const debouncedKeyword = useDebounce(keyword, 300);
 
-  const {
-    data: users,
-    isLoading,
-    error,
-  } = useSWR<SearchedUser[]>(`/api/search?keyword=${debouncedKeyword}`);
+  const { users, isLoading, error } = useSearch(debouncedKeyword);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,7 +21,7 @@ export default function UserSearch() {
     <section className="w-full max-w-2xl mx-auto space-y-4 py-10">
       <form onSubmit={onSubmit} className="relative w-full">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-          <FaSearch className="h-4 w-4 text-neutral-400" />
+          <SearchIcon className="h-4 w-4 text-neutral-400" />
         </div>
         <input
           type="text"

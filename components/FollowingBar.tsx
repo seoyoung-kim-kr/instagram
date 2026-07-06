@@ -4,11 +4,11 @@ import Avatar from "./Avatar";
 import Link from "next/link";
 import { Spinner } from "./ui/Spinner";
 import useSWR from "swr";
-import { DetailUser } from "@/model/user";
+import { HomeUser } from "@/model/user";
 import ScrollableBar from "./ui/ScrollableBar";
 
 export default function FollowingBar() {
-  const { data, isLoading: loading, error } = useSWR<DetailUser>("/api/me");
+  const { data, isLoading: loading, error } = useSWR<HomeUser>("/api/me");
   const users = data?.following;
 
   if (error)

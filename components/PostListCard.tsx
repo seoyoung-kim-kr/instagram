@@ -2,19 +2,21 @@ import Avatar from "./Avatar";
 import Image from "next/image";
 import type { SimplePost } from "@/model/post";
 import parseDate from "@/util/date";
-import { useState } from "react";
-import PostDetailDialog from "./PostDetailDialog";
 import ActionBar from "./ActionBar";
 
 type Props = {
   post: SimplePost;
   priority?: boolean;
+  onCommentClick: () => void;
 };
 
-export default function PostListCard({ post, priority = false }: Props) {
+export default function PostListCard({
+  post,
+  priority = false,
+  onCommentClick,
+}: Props) {
   const { id, userImage, username, createdAt, image, text, likes, comment } =
     post;
-  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   return (
     <>
@@ -38,21 +40,13 @@ export default function PostListCard({ post, priority = false }: Props) {
         <ActionBar
           likes={likes}
           comment={comment}
-          onCommentClick={() => setIsDetailDialogOpen(true)}
+          onCommentClick={onCommentClick}
         />
         <p>
           <span className="font-bold text-md">{username} </span>
           {text}
         </p>
       </div>
-
-      {
-        <PostDetailDialog
-          id={id}
-          open={isDetailDialogOpen}
-          onOpenChange={setIsDetailDialogOpen}
-        />
-      }
     </>
   );
 }
