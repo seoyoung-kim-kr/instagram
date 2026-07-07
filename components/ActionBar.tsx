@@ -1,13 +1,15 @@
 import LikeIcon from "./ui/icons/LikeIcon";
 import BookmarkIcon from "./ui/icons/BookmarkIcon";
 import CommentIcon from "./ui/icons/CommentIcon";
-import ActionButton from "./ActionButton";
+import ToggleButton from "./ToggleButton";
 
 type Props = {
   likes?: string[];
   comment?: number;
   showCount?: boolean;
   onCommentClick?: () => void;
+  liked?: boolean;
+  onLike?: (like: boolean) => void;
 };
 
 export default function ActionBar({
@@ -15,25 +17,41 @@ export default function ActionBar({
   comment,
   showCount = true,
   onCommentClick,
+  liked = false,
+  onLike,
 }: Props) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-x-4">
-        <ActionButton count={showCount ? (likes?.length ?? 0) : undefined}>
-          <LikeIcon />
-        </ActionButton>
+        <ToggleButton
+          toggled={liked}
+          onToggle={onLike}
+          onIcon={<LikeIcon filled />}
+          offIcon={<LikeIcon />}
+          count={showCount ? (likes?.length ?? 0) : undefined}
+        />
         {onCommentClick && (
-          <ActionButton
-            count={showCount ? comment : undefined}
-            onClick={onCommentClick}
-          >
-            <CommentIcon />
-          </ActionButton>
+          <div className="flex items-center gap-x-1">
+            <button
+              type="button"
+              onClick={onCommentClick}
+              className="hover:opacity-60 transition-opacity outline-none"
+            >
+              <CommentIcon />
+            </button>
+            {showCount && comment !== undefined && (
+              <span className="font-bold text-sm">{comment}</span>
+            )}
+          </div>
         )}
       </div>
-      <ActionButton>
+      <button
+        type="button"
+        className="hover:opacity-60 transition-opacity outline-none"
+      >
         <BookmarkIcon />
-      </ActionButton>
+      </button>
     </div>
   );
 }
+
