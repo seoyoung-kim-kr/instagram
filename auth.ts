@@ -25,12 +25,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
 
-    async session({ session }) {
+    async jwt({ token, account, user }) {
+      if (account && user) {
+        token.id = account.providerAccountId || user.id;
+      }
+      return token;
+    },
+
+    async session({ session, token }) {
       const user = session?.user;
-      if (user) {
+      if (user && token) {
         session.user = {
           ...user,
           username: user.email?.split("@")[0],
+          id: token.id as string,
         };
       }
       return session;
