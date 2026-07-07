@@ -5,8 +5,8 @@ import { ProfileUser } from "@/model/user";
 import usePosts from "@/hooks/usePosts";
 import PostGrid from "./PostGrid";
 import PostIcon from "./ui/icons/PostIcon";
-import BookmarkIcon from "./ui/icons/BookmarkIcon";
-import LikeIcon from "./ui/icons/LikeIcon";
+import BookmarkFilledIcon from "./ui/icons/BookmarkFilledIcon";
+import LikeFilledIcon from "./ui/icons/LikeFilledIcon";
 
 type Props = {
   user: ProfileUser;
@@ -29,12 +29,12 @@ export default function UserPosts({ user }: Props) {
     {
       type: "saved" as TabType,
       label: "SAVED",
-      icon: <BookmarkIcon className="size-3.5" filled />,
+      icon: <BookmarkFilledIcon className="size-3.5" />,
     },
     {
       type: "liked" as TabType,
       label: "LIKED",
-      icon: <LikeIcon className="size-3.5" filled />,
+      icon: <LikeFilledIcon className="size-3.5" />,
     },
   ];
 

@@ -1,4 +1,5 @@
 import LikeIcon from "./ui/icons/LikeIcon";
+import LikeFilledIcon from "./ui/icons/LikeFilledIcon";
 import BookmarkIcon from "./ui/icons/BookmarkIcon";
 import CommentIcon from "./ui/icons/CommentIcon";
 import ToggleButton from "./ToggleButton";
@@ -26,7 +27,7 @@ export default function ActionBar({
         <ToggleButton
           toggled={liked}
           onToggle={onLike}
-          onIcon={<LikeIcon filled />}
+          onIcon={<LikeFilledIcon />}
           offIcon={<LikeIcon />}
           count={showCount ? (likes?.length ?? 0) : undefined}
         />
