@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { SimplePost } from "@/model/post";
-import LikeIcon from "./ui/icons/LikeIcon";
-import CommentIcon from "./ui/icons/CommentIcon";
+import LikeFilledIcon from "./ui/icons/LikeFilledIcon";
+import CommentFilledIcon from "./ui/icons/CommentFilledIcon";
 
 type Props = {
   post: SimplePost;
@@ -30,11 +30,11 @@ export default function PostGridCard({
       />
       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-x-4 md:gap-x-8 text-white font-bold text-sm md:text-lg">
         <div className="flex items-center gap-x-1.5 md:gap-x-2">
-          <LikeIcon filled />
+          <LikeFilledIcon />
           <span>{likes?.length ?? 0}</span>
         </div>
         <div className="flex items-center gap-x-1.5 md:gap-x-2">
-          <CommentIcon filled />
+          <CommentFilledIcon />
           <span>{comment}</span>
         </div>
       </div>

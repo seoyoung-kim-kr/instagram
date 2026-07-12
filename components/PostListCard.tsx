@@ -1,3 +1,5 @@
+"use client";
+
 import Avatar from "./Avatar";
 import Image from "next/image";
 import type { SimplePost } from "@/model/post";
@@ -15,8 +17,7 @@ export default function PostListCard({
   priority = false,
   onCommentClick,
 }: Props) {
-  const { id, userImage, username, createdAt, image, text, likes, comment } =
-    post;
+  const { userImage, username, createdAt, image, text } = post;
 
   return (
     <>
@@ -37,11 +38,7 @@ export default function PostListCard({
         priority={priority}
       />
       <div className="mt-2 w-full space-y-1">
-        <ActionBar
-          likes={likes}
-          comment={comment}
-          onCommentClick={onCommentClick}
-        />
+        <ActionBar post={post} onCommentClick={onCommentClick} />
         <p>
           <span className="font-bold text-md">{username} </span>
           {text}

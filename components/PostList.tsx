@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import useSWR from "swr";
 import { Spinner } from "./ui/Spinner";
-import type { SimplePost } from "@/model/post";
 import PostListCard from "./PostListCard";
 import PostDetailDialog from "./PostDetailDialog";
+import usePosts from "@/hooks/usePosts";
 
 export default function PostList() {
-  const { data: posts, isLoading, error } = useSWR<SimplePost[]>("/api/posts");
+  const { posts, isLoading, error } = usePosts();
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
   return (
