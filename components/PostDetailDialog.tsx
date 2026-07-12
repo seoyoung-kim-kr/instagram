@@ -8,13 +8,12 @@ import {
   DialogTitle,
 } from "./ui/Dialog";
 import ActionBar from "./ActionBar";
-import useSWR from "swr";
-import { FullPost } from "@/model/post";
 import { Spinner } from "./ui/Spinner";
 import Image from "next/image";
 import Avatar from "./Avatar";
 import parseDate from "@/util/date";
 import CommentForm from "./CommentForm";
+import usePost from "@/hooks/usePost";
 
 type Props = {
   id: string;
@@ -23,11 +22,7 @@ type Props = {
 };
 
 export default function PostDetailDialog({ open, onOpenChange, id }: Props) {
-  const {
-    data: post,
-    isLoading,
-    error,
-  } = useSWR<FullPost>(open && id ? `/api/posts/${id}` : null);
+  const { post, isLoading, error } = usePost(open ? id : "");
 
   if (isLoading) return <Spinner />;
   if (error) return <p>error: {error.message}</p>;
@@ -90,11 +85,7 @@ export default function PostDetailDialog({ open, onOpenChange, id }: Props) {
             )}
 
             <div className="p-4 border-y border-neutral-200 space-y-4">
-              <ActionBar
-                showCount={false}
-                likes={likes}
-                comment={comments?.length ?? 0}
-              />
+              <ActionBar post={post} showCount={false} />
               <div className="space-y-1">
                 <p className="font-bold text-md">{likes?.length ?? 0} like</p>
                 <p className="text-neutral-500 text-sm font-semibold">
