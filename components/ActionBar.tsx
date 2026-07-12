@@ -2,7 +2,6 @@ import LikeIcon from "./ui/icons/LikeIcon";
 import LikeFilledIcon from "./ui/icons/LikeFilledIcon";
 import BookmarkIcon from "./ui/icons/BookmarkIcon";
 import BookmarkFilledIcon from "./ui/icons/BookmarkFilledIcon";
-import CommentIcon from "./ui/icons/CommentIcon";
 import ToggleButton from "./ToggleButton";
 import type { SimplePost } from "@/model/post";
 import { useSession } from "next-auth/react";
@@ -12,15 +11,15 @@ import useMe from "@/hooks/useMe";
 type Props = {
   post: SimplePost;
   showCount?: boolean;
-  onCommentClick?: () => void;
+  children?: React.ReactNode;
 };
 
 export default function ActionBar({
   post,
   showCount = true,
-  onCommentClick,
+  children,
 }: Props) {
-  const { likes, comment, id } = post;
+  const { likes, id } = post;
   const { data: session } = useSession();
   const user = session?.user;
   const { me, toggleBookmark } = useMe();
@@ -39,20 +38,7 @@ export default function ActionBar({
           offIcon={<LikeIcon />}
           count={showCount ? (likes?.length ?? 0) : undefined}
         />
-        {onCommentClick && (
-          <div className="flex items-center gap-x-1">
-            <button
-              type="button"
-              onClick={onCommentClick}
-              className="hover:opacity-60 transition-opacity outline-none cursor-pointer"
-            >
-              <CommentIcon />
-            </button>
-            {showCount && comment !== undefined && (
-              <span className="font-bold text-sm">{comment}</span>
-            )}
-          </div>
-        )}
+        {children}
       </div>
       <ToggleButton
         toggled={bookmarked}
