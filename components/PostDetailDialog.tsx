@@ -14,6 +14,7 @@ import Avatar from "./Avatar";
 import parseDate from "@/util/date";
 import CommentForm from "./CommentForm";
 import usePost from "@/hooks/usePost";
+import useMe from "@/hooks/useMe";
 
 type Props = {
   id: string;
@@ -22,13 +23,14 @@ type Props = {
 };
 
 export default function PostDetailDialog({ open, onOpenChange, id }: Props) {
-  const { post, isLoading, error } = usePost(open ? id : "");
+  const { post, isLoading, error, postComment } = usePost(open ? id : "");
+  const { me } = useMe();
 
   if (isLoading) return <Spinner />;
   if (error) return <p>error: {error.message}</p>;
   if (!post) return null;
 
-  const { username, userImage, image, likes, comments, createdAt, text } = post;
+  const { username, userImage, image, likes, comments, createdAt } = post;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,7 +96,16 @@ export default function PostDetailDialog({ open, onOpenChange, id }: Props) {
               </div>
             </div>
             <div>
-              <CommentForm />
+              <CommentForm
+                onPostComment={(comment) =>
+                  postComment({
+                    comment,
+                    username: me?.username ?? "",
+                    image: me?.image,
+                    createdAt: new Date().toISOString(),
+                  })
+                }
+              />
             </div>
           </section>
         </DialogContent>
