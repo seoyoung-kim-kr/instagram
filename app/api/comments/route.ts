@@ -1,15 +1,8 @@
-import { auth } from "@/auth";
 import { addComment } from "@/service/post";
-import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/util/api";
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const session = await auth();
-  const user = session?.user;
-
-  if (!user) {
-    return new Response("Authentication Required", { status: 401 });
-  }
-
+export const POST = withAuth(async (req, { user }) => {
   const { id, comment } = await req.json();
 
   if (!id || !comment?.trim()) {
@@ -19,4 +12,4 @@ export async function POST(req: NextRequest) {
   return addComment(id, user.id, comment)
     .then((res) => NextResponse.json(res))
     .catch((error) => new Response(JSON.stringify(error), { status: 500 }));
-}
+});

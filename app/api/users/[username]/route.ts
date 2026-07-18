@@ -1,18 +1,8 @@
-import { auth } from "@/auth";
 import { getUserProfile } from "@/service/user";
-import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/util/api";
+import { NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: Promise<{ username: string }> },
-) {
-  const session = await auth();
-  const user = session?.user;
-
-  if (!user) {
-    return new Response("Auth required", { status: 401 });
-  }
-
+export const GET = withAuth(async (req, { params }) => {
   const { username } = await params;
 
   return getUserProfile(username).then((data) => {
@@ -21,4 +11,4 @@ export async function GET(
     }
     return NextResponse.json(data);
   });
-}
+});

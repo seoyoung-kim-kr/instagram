@@ -1,15 +1,8 @@
-import { auth } from "@/auth";
 import { follow, getUserIdByUsername, unfollow } from "@/service/user";
-import { NextRequest, NextResponse } from "next/server";
+import { withAuth } from "@/util/api";
+import { NextResponse } from "next/server";
 
-export async function PUT(req: NextRequest) {
-  const session = await auth();
-  const user = session?.user;
-
-  if (!user) {
-    return new Response("Auth required", { status: 401 });
-  }
-
+export const PUT = withAuth(async (req, { user }) => {
   const { id: targetId, flow } = await req.json();
 
   if (!targetId || flow === undefined) {
@@ -27,4 +20,4 @@ export async function PUT(req: NextRequest) {
   return service(myId, targetId)
     .then(() => NextResponse.json({ success: true }))
     .catch((error) => new Response(error.message, { status: 500 }));
-}
+});
