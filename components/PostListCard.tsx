@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { SimplePost } from "@/model/post";
 import parseDate from "@/util/date";
 import ActionBar from "./ActionBar";
+import CommentIcon from "./ui/icons/CommentIcon";
 
 type Props = {
   post: SimplePost;
@@ -17,7 +18,7 @@ export default function PostListCard({
   priority = false,
   onCommentClick,
 }: Props) {
-  const { userImage, username, createdAt, image, text } = post;
+  const { userImage, username, createdAt, image, text, comment } = post;
 
   return (
     <>
@@ -38,7 +39,20 @@ export default function PostListCard({
         priority={priority}
       />
       <div className="mt-2 w-full space-y-1">
-        <ActionBar post={post} onCommentClick={onCommentClick} />
+        <ActionBar post={post}>
+          <div className="flex items-center gap-x-1">
+            <button
+              type="button"
+              onClick={onCommentClick}
+              className="hover:opacity-60 transition-opacity outline-none cursor-pointer"
+            >
+              <CommentIcon />
+            </button>
+            {comment !== undefined && (
+              <span className="font-bold text-sm">{comment}</span>
+            )}
+          </div>
+        </ActionBar>
         <p>
           <span className="font-bold text-md">{username} </span>
           {text}

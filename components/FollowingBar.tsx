@@ -3,13 +3,12 @@
 import Avatar from "./Avatar";
 import Link from "next/link";
 import { Spinner } from "./ui/Spinner";
-import useSWR from "swr";
-import { HomeUser } from "@/model/user";
 import ScrollableBar from "./ui/ScrollableBar";
+import useMe from "@/hooks/useMe";
 
 export default function FollowingBar() {
-  const { data, isLoading: loading, error } = useSWR<HomeUser>("/api/me");
-  const users = data?.following;
+  const { me, isLoading: loading, error } = useMe();
+  const users = me?.following;
 
   if (error)
     return (

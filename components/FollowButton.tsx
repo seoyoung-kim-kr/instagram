@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { ProfileUser } from "@/model/user";
 import { Spinner } from "@/components/ui/Spinner";
-import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import Button from "./Button";
+import useMe from "@/hooks/useMe";
 
 type Props = {
   user: ProfileUser;
@@ -13,8 +13,8 @@ type Props = {
 
 export default function FollowButton({ user }: Props) {
   const { username, id } = user;
-  const { data: session } = useSession();
-  const myUsername = session?.user?.username;
+  const { me, toggleFollow } = useMe();
+  const myUsername = me?.username;
 
   // Sync with the user details cache key to apply optimistic updates
   const { mutate } = useSWR<ProfileUser>(`/api/users/${username}`);
@@ -27,7 +27,7 @@ export default function FollowButton({ user }: Props) {
     : false;
 
   const handleFollowToggle = async () => {
-    if (isUpdating || !myUsername) return;
+    if (isUpdating || !me || !myUsername) return;
 
     setIsUpdating(true);
 
@@ -38,10 +38,11 @@ export default function FollowButton({ user }: Props) {
             ...followers,
             {
               username: myUsername,
-              image: session?.user?.image ?? undefined,
+              image: me.image ?? undefined,
             },
           ];
 
+      // 1. 상대방 프로필 캐시 낙관적 업데이트
       mutate(
         {
           ...user,
@@ -50,18 +51,8 @@ export default function FollowButton({ user }: Props) {
         { revalidate: false },
       );
 
-      const res = await fetch("/api/follow", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id,
-          flow: !isFollowing,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to update follow");
-      }
+      // 2. 내 팔로잉 캐시 낙관적 업데이트 및 API 호출
+      await toggleFollow(id, { username: myUsername, image: me.image }, !isFollowing);
 
       mutate();
     } catch (err) {
