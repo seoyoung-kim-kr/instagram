@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { getUserProfile } from "@/service/user";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import UserProfile from "@/components/UserProfile";
 import UserPosts from "@/components/UserPosts";
 import { Metadata } from "next";
@@ -29,9 +29,7 @@ export default async function UserPage({ params }: Props) {
   const session = await auth();
   const user = session?.user;
 
-  if (!user) {
-    redirect("/sign-in");
-  }
+  if (!user) return null;
 
   const { username } = await params;
   const profileUser = await getUser(username);
