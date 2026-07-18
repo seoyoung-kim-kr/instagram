@@ -7,6 +7,7 @@ import PostGrid from "./PostGrid";
 import PostIcon from "./ui/icons/PostIcon";
 import BookmarkFilledIcon from "./ui/icons/BookmarkFilledIcon";
 import LikeFilledIcon from "./ui/icons/LikeFilledIcon";
+import { CacheKeysContext } from "@/context/CacheKeysContext";
 
 type Props = {
   user: ProfileUser;
@@ -60,15 +61,21 @@ export default function UserPosts({ user }: Props) {
       </ul>
 
       {/* Tab Posts Grid */}
-      <div className="px-1 md:px-0">
-        {error ? (
-          <div className="p-4 bg-red-50 text-red-500 rounded-xl text-center text-sm font-medium">
-            게시물을 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.
-          </div>
-        ) : (
-          <PostGrid posts={posts} isLoading={isLoading} />
-        )}
-      </div>
+      <CacheKeysContext.Provider
+        value={{
+          postsKey: `/api/users/${user.username}/posts?type=${activeTab}`,
+        }}
+      >
+        <div className="px-1 md:px-0">
+          {error ? (
+            <div className="p-4 bg-red-50 text-red-500 rounded-xl text-center text-sm font-medium">
+              게시물을 불러오는 중 오류가 발생했습니다. 다시 시도해 주세요.
+            </div>
+          ) : (
+            <PostGrid posts={posts} isLoading={isLoading} />
+          )}
+        </div>
+      </CacheKeysContext.Provider>
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import { FullPost, SimplePost, Comment } from "@/model/post";
 import useSWR, { useSWRConfig } from "swr";
 import { useCallback } from "react";
+import { useCacheKeys } from "@/context/CacheKeysContext";
 
 async function updateLike(id: string, like: boolean) {
   const res = await fetch("/api/likes", {
@@ -21,6 +22,7 @@ async function addComment(id: string, comment: string) {
 }
 
 export default function usePost(postId: string) {
+  const { postsKey } = useCacheKeys();
   const {
     data: post,
     isLoading,
@@ -37,14 +39,27 @@ export default function usePost(postId: string) {
 
       const newPost = { ...post, likes: newLikes } as FullPost;
 
+      // 1. 상세 캐시 낙관적 업데이트
       mutate(updateLike(post.id, like), {
         optimisticData: newPost,
         populateCache: false,
         revalidate: false,
         rollbackOnError: true,
       });
+
+      // 2. 목록 캐시의 좋아요 동기화
+      globalMutate(
+        postsKey,
+        (currentPosts: SimplePost[] | undefined) => {
+          if (!currentPosts) return undefined;
+          return currentPosts.map((p) =>
+            p.id === post.id ? { ...p, likes: newLikes } : p,
+          );
+        },
+        { revalidate: false },
+      );
     },
-    [mutate],
+    [postsKey, mutate, globalMutate],
   );
 
   const postComment = useCallback(
@@ -67,19 +82,7 @@ export default function usePost(postId: string) {
 
       // 2. 피드 목록 캐시의 댓글 카운트 동기화
       globalMutate(
-        "/api/posts",
-        (currentPosts: SimplePost[] | undefined) => {
-          if (!currentPosts) return undefined;
-          return currentPosts.map((p) =>
-            p.id === post.id ? { ...p, comment: p.comment + 1 } : p,
-          );
-        },
-        { revalidate: false },
-      );
-
-      // 3. 프로필 탭 캐시 목록의 댓글 카운트 동기화
-      globalMutate(
-        (key) => typeof key === "string" && key.startsWith("/api/users/"),
+        postsKey,
         (currentPosts: SimplePost[] | undefined) => {
           if (!currentPosts) return undefined;
           return currentPosts.map((p) =>
